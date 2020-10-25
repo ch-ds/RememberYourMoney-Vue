@@ -1,24 +1,49 @@
-# project
+## 鲨鱼记账
 
-## Project setup
-```
-npm install
-```
+- 主要功能
+  1.  记账-【收入、支出】
+  2.  明细账单
+  3.  总账单
+  4.  设置每月预算 -暂定
+  5.  资产-【现金、借记卡、信用卡、支付宝、微信、应付款项(负债)、应收款项】 -暂定
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 功能一：记账
 
-### Compiles and minifies for production
-```
-npm run build
-```
+- 最主要的功能
+  - 支出模块
+  - 收入模块
 
-### Lints and fixes files
-```
-npm run lint
-```
+### 支出模块包含一下内容：
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- 餐饮、购物、日用、交通、蔬菜、水果、零食、运动、娱乐、通讯、服饰、美容、住宅、居家、孩子、长辈、社交、旅行、烟酒、数码、汽车、医疗、书籍、学习、宠物、礼金、礼物、办公、维修、捐赠、彩票、亲友、快递
+
+### 收入模块包含一下内容
+
+- 工资、兼职、理财、礼金、其他
+
+> 其中还有一个选项为 **设置**，主要是用于**添加或删除模块**
+
+## 首页模块
+
+### 难点 1：侧边导航栏的区域，层次不一
+
+- 解决方法，使用了递归组件:
+  1.  在 components -> menu 文件夹下 定义了 MenuTree.vue 组件
+  2.  接收一个参数 menuData， 该参数为列表数据【数组】
+  3.  循环该数组，判断 children 是否为空，不为空则继续递归，为空则使用 `<el-menu-item></el-menu-item>` 标签
+  4.  在引入该组件，最后进行调用，然后传入参数即可
+
+### 难点 2：两个盒子使用动画照成僵硬
+
+- 解决方法，使用`transition-group`
+  1.  首先使用 `transition-group` 包裹两个盒子，然后分别对盒子绑定 key 属性
+  2.  定义好过渡的样式，最后定义 `v-move` 样式
+	3.	在 `v-leave-active` 样式里定义一个 `position:absolute;` 即可进行平滑过渡
+
+### 难点 3 ：使用 `v-move` 属性之后，会出现几个问题
+
+- 问题：
+	1. 因为 `position:absolute;` 的原因，当执行离开动画时，屏幕下方出现滚动条
+	2. 无法控制 元素离开后，在回来的起点位置， 元素会从上方返回，但设置的离开位置是`width:0`(一开始设置的是 `transform:translateX(-250px)`，回来起点位置在右上方)
+
+> 这个问题尚未解决
