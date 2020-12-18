@@ -1,0 +1,106 @@
+html,
+body,
+#app {
+  min-width: 1366px;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+ul,
+li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#index {
+  --header-color: rgb(47, 54, 56);
+  --header-color-active: rgb(40, 45, 47);
+
+  --aside-color: rgb(31, 34, 36);
+  --aside-color-active: rgb(40, 45, 47);
+
+  --article-color: rgb(58, 65, 68);
+  --article-color-active: rgb(66, 75, 79);
+
+  --font-color: rgb(183, 190, 190);
+  --font-color-active: rgb(220, 220, 220);
+}
+
+.el-table {
+  background-color: var(--article-color-active);
+  // 头部样式
+  .el-table__header-wrapper thead tr th {
+    background-color: var(--article-color-active);
+    color: var(--font-color);
+  }
+  // 内容样式
+  .el-table__body-wrapper .el-table__body tr td {
+    background-color: var(--article-color-active);
+    color: var(--font-color);
+  }
+  // hover样式
+  .el-table__body-wrapper tbody tr:hover td {
+    background-color: var(--article-color);
+  }
+  // 底部样式
+  .el-table__footer-wrapper .el-table__footer {
+    .has-gutter tr td {
+      background-color: var(--article-color);
+      color: var(--font-color);
+    }
+  }
+}
+
+.el-card {
+  margin: 20px;
+  background-color: var(--article-color-active);
+  border: none;
+  .el-card__body .el-breadcrumb span .el-breadcrumb__inner {
+    color: var(--font-color);
+  }
+  .el-card__body .el-breadcrumb span .el-breadcrumb__inner[class*="is-link"] {
+    color: var(--font-color-active);
+  }
+}
+
+.el-tabs {
+  .el-tabs__nav-wrap::after {
+    background-color: var(--font-color);
+  }
+  .el-tabs__item {
+    color: var(--font-color);
+  }
+  .is-active {
+    color: var(--font-color-active);
+  }
+  .el-tabs__active-bar {
+    background-color: var(--font-color-active);
+  }
+}
+
+// .el-steps {
+//   // 完成时的颜色
+//   .el-step__main .is-finish,
+//   .is-finish .is-text {
+//     // color:red;
+//   }
+//   // 正在时的颜色
+//   .el-step__main .is-process {
+//     color: var(--font-color-active);
+//   }
+//   .is-process .is-text {
+//     border-color: var(--font-color-active);
+//   }
+//   // 等待时的颜色
+//   .el-step__main .is-wait,
+//   .is-wait .is-text {
+//     color: var(--font-color);
+//     border-color: var(--font-color);
+//   }
+// }

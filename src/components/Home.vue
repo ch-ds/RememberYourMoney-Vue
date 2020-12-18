@@ -18,12 +18,21 @@ export default {
       // 图表数据
       incomeOption: {
         // 设置标题
-        title: {
-          text: '本月收入',
+        title: [{
+          text: '本月收入分类',
           textStyle: {
             color: 'rgb(0,255,0)'
           }
-        },
+        }, {
+          show: false,
+          subtext: '暂无收入',
+          left: '50%',
+          bottom: '0%',
+          textAlign: 'center',
+          subtextStyle: {
+            fontSize: 16
+          }
+        }],
         // 设置图形颜色
         color: ['#ca8622', '#91c7ae', '#749f83', '#d48265'],
         tooltip: {
@@ -59,7 +68,6 @@ export default {
               show: false
             },
             data: [
-              { value: 335, name: '工资' },
               { value: 310, name: '兼职' },
               { value: 234, name: '理财' },
               { value: 135, name: '其他' }
@@ -70,12 +78,21 @@ export default {
       // 图表数据
       expendOption: {
         // 设置标题
-        title: {
-          text: '本月支出',
+        title: [{
+          text: '本月支出分类',
           textStyle: {
             color: 'red'
           }
-        },
+        }, {
+          show: false,
+          subtext: '暂无交易',
+          left: '50%',
+          bottom: '0%',
+          textAlign: 'center',
+          subtextStyle: {
+            fontSize: 18
+          }
+        }],
         // 设置图形颜色
         color: ['rgb(231, 173, 63)', 'rgb(236, 213, 75)', 'rgb(193, 210, 108)', 'rgb(104, 176, 102)', 'rgb(73, 162, 160)', 'rgb(64, 140, 227)'],
         tooltip: {
@@ -124,12 +141,13 @@ export default {
       },
       incomeReportOption: {
         title: {
-          text: '本周收入情况',
-          subtext: '总收入：XXXXX元\n平均值：XXXXXX元',
+          text: '本月收入情况',
+          subtext: '总收入：0元\n平均值：0元',
           textStyle: {
             color: 'rgb(0,255,0)'
           },
           subtextStyle: {
+            fontSize: 16,
             color: 'rgb(0,200,0)',
             lineHeight: 16
           }
@@ -198,8 +216,7 @@ export default {
             type: 'line',
             data: [120, 132, 101, 134, 90, 230, 210, 120, 132, 101, 134,
               90, 230, 210, 120, 132, 101, 134, 90, 230, 210, 120,
-              132, 101, 134, 90, 230, 210, 120, 132, 101, 134, 90,
-              230, 210, 120, 132, 101, 134, 90, 230, 210],
+              132, 101, 134, 90, 230, 210, 120, 0, 0],
             itemStyle: {
               color: 'rgb(0,255,0)'
             }
@@ -208,13 +225,14 @@ export default {
       },
       expendReportOption: {
         title: {
-          text: '本周支出情况',
-          subtext: '总支出：XXXXX元\n平均值：XXXXXX元',
+          text: '本月支出情况',
+          subtext: '总支出：0元\n平均值：0元',
           textStyle: {
             color: 'rgb(255,0,0)'
           },
           subtextStyle: {
-            color: 'rgb(200,0,0)',
+            fontSize: 16,
+            color: 'rgb(255,40,40)',
             lineHeight: 16
           }
         },
@@ -293,22 +311,161 @@ export default {
     }
   },
   mounted () {
-    const incomeCharts = this.drawEcharts(this.$refs.income, this.incomeOption)
-    const expendCharts = this.drawEcharts(this.$refs.expend, this.expendOption)
-    const incomeReportCharts = this.drawEcharts(this.$refs.incomeReport, this.incomeReportOption)
-    const expendReportCharts = this.drawEcharts(this.$refs.expendReport, this.expendReportOption)
-    window.onresize = function () {
-      incomeCharts.resize()
-      expendCharts.resize()
-      incomeReportCharts.resize()
-      expendReportCharts.resize()
-    }
+    this.getIncomeOption()
+    this.getIncomeReportOption()
+    this.getExpendOption()
+    this.getExpendReportOption()
   },
   methods: {
+    // 画 echarts 图方法
     drawEcharts (dom, option) {
       const myCharts = this.$echarts.init(dom)
       myCharts.setOption(option)
       return myCharts
+    },
+    // 获取本月收入的数据
+    async getIncomeOption () {
+      const { data: res } = await this.$http.get(`/income/type/sumMoney/${this.$store.state.userObj.uid}`, {
+        params: {
+          timeType: 'month',
+          timeValue: new Date().getTime()
+        }
+      })
+      console.log(res)
+      if (res.meta.status !== 200) {
+        // 说明失败了
+        this.incomeOption.series[0].data = [{
+          value: 0,
+          name: '暂无收入',
+          itemStyle: { color: '#949494' }
+        }]
+        this.incomeOption.series[0].name = '暂无收入'
+        this.incomeOption.title[1].show = true
+      } else {
+        // 有数据则进行下一步操作
+        // map循环拿出需要的数据
+        this.incomeOption.legend.data = res.data.map(item => item.incomeType_name)
+        this.incomeOption.series[0].data = res.data.map(item => ({
+          name: item.incomeType_name,
+          value: item.sumMoney
+        }))
+      }
+      console.log(this.incomeOption)
+      const incomeCharts = this.drawEcharts(this.$refs.income, this.incomeOption)
+      window.addEventListener('resize', function () {
+        incomeCharts.resize()
+      })
+    },
+    // 获取本月支出的数据
+    async getExpendOption () {
+      const { data: res } = await this.$http.get(`/expend/type/sumMoney/${this.$store.state.userObj.uid}`, {
+        params: {
+          timeType: 'month',
+          timeValue: new Date().getTime()
+        }
+      })
+      if (res.meta.status !== 200) {
+        this.expendOption.title[1].show = true
+        this.expendOption.legend.data = ['暂无消费']
+        this.expendOption.series[0].data = [{
+          value: 0,
+          name: '暂无消费',
+          itemStyle: { color: '#949494' }
+        }]
+      } else {
+        this.expendOption.legend.data = res.data.map(item => item.expendType_name)
+        this.expendOption.series[0].data = res.data.map(item => ({
+          value: item.sumMoney,
+          name: item.expendType_name
+        }))
+      }
+      const expendCharts = this.drawEcharts(this.$refs.expend, this.expendOption)
+      window.addEventListener('resize', function () {
+        expendCharts.resize()
+      })
+    },
+    // 获取本月每日收入的数据
+    async getIncomeReportOption () {
+      const time = new Date()
+      const { data: res } = await this.$http.get(`/income/day/sumMoney/${this.$store.state.userObj.uid}`, {
+        params: {
+          timeType: 'month',
+          timeValue: time.getTime()
+        }
+      })
+      // 根据当前日期，获取到这个月一共多少天
+      const month = time.getMonth() + 1
+      const day = new Date(time.getFullYear(), month, 0).getDate()
+      const dayMap = new Map()
+      for (let i = 0; i < day; i++) {
+        dayMap.set(`${month}月${String(i + 1).padStart(2, 0)}日`, 0)
+      }
+      if (res.meta.status === 200) {
+        let sum = 0
+        res.data.forEach(item => {
+          sum += item.sumMoney
+          if (dayMap.has(item.timeDay)) {
+            dayMap.set(item.timeDay, item.sumMoney)
+          }
+        })
+        this.incomeReportOption.title.subtext = `总收入：${sum}元\n平均值：${(sum / day).toFixed(2)}元`
+      }
+      const xAxisData = []
+      for (const key of dayMap.keys()) {
+        xAxisData.push(key)
+      }
+      const seriesData = []
+      for (const value of dayMap.values()) {
+        seriesData.push(value)
+      }
+      this.incomeReportOption.xAxis.data = xAxisData
+      this.incomeReportOption.series[0].data = seriesData
+      const incomeReportCharts = this.drawEcharts(this.$refs.incomeReport, this.incomeReportOption)
+      window.addEventListener('resize', function () {
+        incomeReportCharts.resize()
+      })
+    },
+    // 获取本月每日支出的数据
+    async getExpendReportOption () {
+      const time = new Date()
+      const { data: res } = await this.$http.get(`/expend/day/sumMoney/${this.$store.state.userObj.uid}`, {
+        params: {
+          timeType: 'month',
+          timeValue: time.getTime()
+        }
+      })
+      console.log(res)
+      // 根据当前日期，获取到这个月一共多少天
+      const month = time.getMonth() + 1
+      const day = new Date(time.getFullYear(), month, 0).getDate()
+      const dayMap = new Map()
+      for (let i = 0; i < day; i++) {
+        dayMap.set(`${month}月${String(i + 1).padStart(2, 0)}日`, 0)
+      }
+      if (res.meta.status === 200) {
+        let sum = 0
+        res.data.forEach(item => {
+          sum += item.sumMoney
+          if (dayMap.has(item.timeDay)) {
+            dayMap.set(item.timeDay, item.sumMoney)
+          }
+        })
+        this.expendReportOption.title.subtext = `总支出：${sum}元\n平均值：${(sum / day).toFixed(2)}元`
+      }
+      const xAxisData = []
+      for (const key of dayMap.keys()) {
+        xAxisData.push(key)
+      }
+      const seriesData = []
+      for (const value of dayMap.values()) {
+        seriesData.push(value)
+      }
+      this.expendReportOption.xAxis.data = xAxisData
+      this.expendReportOption.series[0].data = seriesData
+      const expendReportCharts = this.drawEcharts(this.$refs.expendReport, this.expendReportOption)
+      window.addEventListener('resize', function () {
+        expendReportCharts.resize()
+      })
     }
   }
 }
@@ -322,7 +479,7 @@ export default {
 .bill-wrap {
   padding: 20px 0;
   width: 100%;
-  height: 250px;
+  height: 280px;
   display: flex;
   justify-content: space-around;
 

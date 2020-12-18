@@ -10,11 +10,11 @@
           <el-button @click="showAside = !showAside"
             ><i class="el-icon-s-grid"></i
           ></el-button>
-          <el-input placeholder="搜索内容..." v-model="searchValue"></el-input>
-          <el-button><i class="el-icon-search"></i></el-button>
         </div>
         <div class="info-row">
-          <span class="info-name">欢迎你,某某某</span>
+          <span class="info-name"
+            >欢迎你,{{ $store.state.userObj.realname }}</span
+          >
           <el-badge :value="4" type="success">
             <i class="iconfont icon-icon-test1"></i>
           </el-badge>
@@ -33,7 +33,7 @@
         <!-- 头像区域 -->
         <div class="aside-info-wrap">
           <img src="../assets/images/user.jpg" alt="头像" />
-          <p>AMeekPerson</p>
+          <p>{{ $store.state.userObj.realname }}</p>
           <a href=""><i class="el-icon-edit"></i>账号设置</a>
         </div>
         <!-- 导航栏区域 -->
@@ -51,7 +51,7 @@
       </aside>
       <!-- 主内容 -->
       <article class="index-content" key="article">
-        <router-view></router-view>
+        <router-view :key="$route.path"></router-view>
       </article>
     </transition-group>
   </div>
@@ -79,78 +79,72 @@ export default {
           icon: 'el-icon-plus',
           children: [{
             id: '21',
-            name: '收入登记表',
-            router: '/income',
+            name: '收入登记',
+            router: '/addBill/income',
             icon: 'iconfont icon-income-o'
           }, {
             id: '22',
-            name: '支出登记表',
-            router: '/expend',
+            name: '支出登记',
+            router: '/addBill/expend',
             icon: 'iconfont icon-jiaoyizhichu'
           }]
         }, {
           id: '3',
-          name: '明细账单',
-          icon: 'iconfont icon-mingxi',
+          name: '账单',
+          icon: 'el-icon-document',
           children: [{
             id: '31',
-            name: '收入明细',
-            icon: 'iconfont icon-shourumingxi',
+            name: '明细账单',
+            icon: 'iconfont icon-mingxi',
             children: [{
               id: '311',
-              name: '周收入明细',
-              icon: 'iconfont icon-zhou',
-              router: ''
+              name: '收入明细',
+              icon: 'iconfont icon-shourumingxi',
+              router: '/detailBill/income'
             }, {
               id: '312',
-              name: '月收入明细',
-              icon: 'iconfont icon-yue',
-              router: ''
-            }, {
-              id: '313',
-              name: '年收入明细',
-              icon: 'iconfont icon-nian',
-              router: ''
+              name: '支出明细',
+              icon: 'iconfont icon-zhichumingxi',
+              router: '/detailBill/expend'
             }]
           }, {
             id: '32',
-            name: '支出明细',
-            icon: 'iconfont icon-zhichumingxi',
+            name: '总账单',
+            icon: 'iconfont icon-zhangdan',
             children: [{
               id: '321',
-              name: '周支出明细',
+              name: '收入总账单',
               icon: 'iconfont icon-zhou',
               router: ''
             }, {
               id: '322',
-              name: '月支出明细',
+              name: '支出总账单',
               icon: 'iconfont icon-yue',
-              router: ''
-            }, {
-              id: '323',
-              name: '年支出明细',
-              icon: 'iconfont icon-nian',
               router: ''
             }]
           }]
         }, {
           id: '4',
-          name: '总账单',
-          icon: 'iconfont icon-zhangdan',
+          name: '设置',
+          icon: 'el-icon-s-tools',
           children: [{
             id: '41',
-            name: '周总账单',
-            icon: 'iconfont icon-zhou',
-            router: ''
+            name: '账单分类',
+            icon: 'el-icon-s-grid',
+            router: '',
+            children: [{
+              id: '411',
+              name: '收入分类',
+              router: '/setup/incomeType'
+            }, {
+              id: '412',
+              name: '支出分类',
+              router: '/setup/expendType'
+            }]
           }, {
             id: '42',
-            name: '月总账单',
-            icon: 'iconfont icon-yue',
-            router: ''
-          }, {
-            id: '43',
-            name: '年总账单',
-            icon: 'iconfont icon-nian',
+            name: '个人信息设置',
+            icon: 'el-icon-user-solid',
             router: ''
           }]
         }]
@@ -162,37 +156,6 @@ export default {
 }
 </script>
 
-<style lang="css">
-.tool-row .el-input__inner {
-  width: 300px;
-  height: 50px;
-  font-size: 16px;
-  color: var(--font-color-active);
-  outline: none;
-  border: none;
-  background-color: var(--header-color);
-}
-.index-aside .el-submenu__title,
-.index-aside .el-menu-item {
-  text-align: start;
-  font-size: 16px;
-}
-.index-aside .el-menu i {
-  font-size: 24px;
-}
-.index-aside .el-submenu__title:hover,
-.index-aside .el-menu-item:hover {
-  background-color: var(--aside-color) !important;
-  color: var(--font-color-active) !important;
-}
-.index-aside .el-submenu__title:hover i,
-.index-aside .el-menu-item:hover i {
-  color: var(--font-color-active) !important;
-}
-.is-active {
-  background-color: var(--aside-color) !important;
-}
-</style>
 <style lang="scss" scoped>
 // transition动画
 .asideBox-enter-active,
@@ -282,7 +245,6 @@ main {
   min-height: calc(100vh - 50px);
   background-color: var(--article-color);
   > .index-aside {
-    // position: absolute;
     width: 250px;
     min-height: 100%;
     > .aside-info-wrap {
@@ -314,10 +276,30 @@ main {
     > .el-menu {
       height: calc(100% - 220px);
       border-right: 0;
+      /deep/ .el-submenu__title,
+      /deep/ .el-menu-item {
+        text-align: start;
+        font-size: 16px;
+      }
+      /deep/ i {
+        font-size: 24px;
+      }
+      /deep/ .el-submenu__title:hover,
+      /deep/ .el-menu-item:hover {
+        background-color: var(--aside-color) !important;
+        color: var(--font-color-active) !important;
+      }
+      /deep/ .el-submenu__title:hover i,
+      /deep/ .el-menu-item:hover i {
+        color: var(--font-color-active) !important;
+      }
+      /deep/ .is-active {
+        background-color: var(--aside-color) !important;
+      }
     }
   }
   > .index-content {
-    flex: 1;
+    width: calc(100% - 250px);
     height: 100%;
     color: var(--font-color-active);
     background-color: var(--article-color);
