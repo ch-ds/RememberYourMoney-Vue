@@ -92,7 +92,6 @@ router.get('/income/:uid', async (req, res) => {
     lowPrice,
     highPrice
   }
-  console.log(where)
   const data = await incomeService.selectAllIncome(where, JSON.parse(page))
   if (data && Object.keys(data).length !== 0) {
     res.json({
@@ -238,6 +237,80 @@ router.get('/income/type/sumMoney/:uid', async (req, res) => {
       meta: {
         status: 400,
         msg: '没有数据'
+      },
+    })
+  }
+})
+
+// 添加收入类型
+router.post('/incomeType', async (req, res) => {
+  const { incomeType_name, incomeType_leave, incomeType_pid } = req.body
+  const where = {
+    incomeType_name,
+    incomeType_leave,
+    incomeType_pid
+  }
+  console.log(where)
+  const data = await incomeService.insertIncomeType(where)
+  if (data) {
+    res.json({
+      meta: {
+        status: 200,
+        meta: '添加收入类型数据成功'
+      },
+    })
+  } else {
+    res.json({
+      meta: {
+        status: 400,
+        meta: '添加收入类型数据失败'
+      },
+    })
+  }
+})
+
+// 修改收入类型
+router.put('/incomeType/:incomeType_id', async (req, res) => {
+  const { incomeType_id } = req.params
+  const { incomeType_name } = req.body
+  const where = {
+    incomeType_id,
+    incomeType_name,
+  }
+  const data = await incomeService.updateIncomeType(where)
+  if (data) {
+    res.json({
+      meta: {
+        status: 200,
+        meta: '修改收入类型数据成功'
+      },
+    })
+  } else {
+    res.json({
+      meta: {
+        status: 400,
+        meta: '修改收入类型数据失败'
+      },
+    })
+  }
+})
+
+// 删除收入类型
+router.delete('/incomeType/:incomeType_id', async (req, res) => {
+  const { incomeType_id } = req.params
+  const data = await incomeService.deleteIncomeType(incomeType_id)
+  if (data) {
+    res.json({
+      meta: {
+        status: 200,
+        meta: '修改收入类型数据成功'
+      },
+    })
+  } else {
+    res.json({
+      meta: {
+        status: 400,
+        meta: '修改收入类型数据失败'
       },
     })
   }

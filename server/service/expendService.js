@@ -25,9 +25,9 @@ class expendService {
         data.splice(i, 1)
         i--
       }
-      if (leave > 2) {
-        this.recursionFunc(data, leave - 1)
-      }
+    }
+    if (leave > 2) {
+      this.recursionFunc(data, leave - 1)
     }
   }
   // 支出登记
@@ -166,7 +166,26 @@ class expendService {
     return data
   }
 
+  // 添加收入类型
+  async insertExpendType ({ expendType_name, expendType_leave, expendType_pid }) {
+    if (expendType_pid === 'null') {
+      expendType_pid = null
+    }
+    const data = await expendTypeDao.insert({ expendType_name, expendType_leave, expendType_pid })
+    return data.affectedRows === 1 ? 'true' : false
+  }
 
+  // 修改支出类型
+  async updateExpendType ({ expendType_name, expendType_id }) {
+    const data = await expendTypeDao.update({ expendType_name }, { expendType_id })
+    return data.affectedRows === 1 ? 'true' : false
+  }
+
+  // 删除支出类型
+  async deleteExpendType (expendType_id) {
+    const data = await expendTypeDao.deleteExpendType(expendType_id)
+    return data.affectedRows > 0 ? 'true' : false
+  }
 }
 
 module.exports = new expendService()

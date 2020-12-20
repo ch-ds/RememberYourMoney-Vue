@@ -33,6 +33,7 @@ li {
 }
 
 .el-table {
+  margin-top: 20px;
   background-color: var(--article-color-active);
   // 头部样式
   .el-table__header-wrapper thead tr th {
@@ -54,6 +55,9 @@ li {
       background-color: var(--article-color);
       color: var(--font-color);
     }
+  }
+  .el-icon-arrow-right {
+    color: var(--font-color);
   }
 }
 

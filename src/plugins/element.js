@@ -3,7 +3,7 @@ import {
   Button, Input, Badge, Menu, Submenu, MenuItem, Form, FormItem,
   Cascader, DatePicker, Upload, Dialog, Message, Table, TableColumn,
   MessageBox, Pagination, Select, Option, Checkbox, Tooltip, Card,
-  Breadcrumb, BreadcrumbItem, Steps, Step, Tabs, TabPane
+  Breadcrumb, BreadcrumbItem, Steps, Step, Tabs, TabPane, Tag, Row, Col
 } from 'element-ui'
 
 Vue.use(Button)
@@ -32,6 +32,9 @@ Vue.use(Steps)
 Vue.use(Step)
 Vue.use(Tabs)
 Vue.use(TabPane)
+Vue.use(Tag)
+Vue.use(Row)
+Vue.use(Col)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

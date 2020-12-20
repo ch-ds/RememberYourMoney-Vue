@@ -33,9 +33,12 @@ class incomeService {
     for (let i = 0; i < data.length; i++) {
       if (data[i].incomeType_leave === leave) {
         // 说明是子类,找到他的父类，并将该对象添加到父类的children属性中
-        const parent = data.find(item => item.incomeType_id === data[i].incomeType_pid)
+        // const parent = data.find(item => item.incomeType_id === data[i].incomeType_pid)
+        const parent = data.find(item => {
+          return item.incomeType_id === data[i].incomeType_pid
+        })
         // 判断父类是否有children属性，如果没有则创建
-        if (parent.children === undefined) {
+        if (!parent.children) {
           parent.children = []
         }
         parent.children.push(data[i])
@@ -43,10 +46,9 @@ class incomeService {
         data.splice(i, 1)
         i--
       }
-
-      if (leave > 2) {
-        this.recursionFunc(data, leave - 1)
-      }
+    }
+    if (leave > 2) {
+      this.recursionFunc(data, leave - 1)
     }
   }
 
@@ -179,6 +181,26 @@ class incomeService {
     return data
   }
 
+  // 添加收入类型
+  async insertIncomeType ({ incomeType_name, incomeType_leave, incomeType_pid }) {
+    if (incomeType_pid === 'null') {
+      incomeType_pid = null
+    }
+    const data = await incomeTypeDao.insert({ incomeType_name, incomeType_leave, incomeType_pid })
+    return data.affectedRows === 1 ? 'true' : false
+  }
+
+  // 修改收入类型
+  async updateIncomeType ({ incomeType_name, incomeType_id }) {
+    const data = await incomeTypeDao.update({ incomeType_name }, { incomeType_id })
+    return data.affectedRows === 1 ? 'true' : false
+  }
+
+  // 删除收入类型
+  async deleteIncomeType (incomeType_id) {
+    const data = await incomeTypeDao.deleteIncomeType(incomeType_id)
+    return data.affectedRows > 1 ? 'true' : false
+  }
 }
 
 module.exports = new incomeService()

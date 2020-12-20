@@ -153,6 +153,7 @@ export default {
       width: 100%;
       font-weight: bold;
       font-size: 24px;
+      text-align: center;
     }
   }
   > .el-form {

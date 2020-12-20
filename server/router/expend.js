@@ -250,4 +250,77 @@ router.get('/expend/type/sumMoney/:uid', async (req, res) => {
   }
 })
 
+// 添加支出类型
+router.post('/expendType', async (req, res) => {
+  const { expendType_name, expendType_leave, expendType_pid } = req.body
+  const where = {
+    expendType_name,
+    expendType_leave,
+    expendType_pid
+  }
+  const data = await expendService.insertExpendType(where)
+  if (data) {
+    res.json({
+      meta: {
+        status: 200,
+        meta: '添加支出类型数据成功'
+      },
+    })
+  } else {
+    res.json({
+      meta: {
+        status: 400,
+        meta: '添加支出类型数据失败'
+      },
+    })
+  }
+})
+
+// 修改支出类型
+router.put('/expendType/:expendType_id', async (req, res) => {
+  const { expendType_id } = req.params
+  const { expendType_name } = req.body
+  const where = {
+    expendType_id,
+    expendType_name,
+  }
+  const data = await expendService.updateExpendType(where)
+  if (data) {
+    res.json({
+      meta: {
+        status: 200,
+        meta: '修改支出类型数据成功'
+      },
+    })
+  } else {
+    res.json({
+      meta: {
+        status: 400,
+        meta: '修改支出类型数据失败'
+      },
+    })
+  }
+})
+
+// 删除支出类型
+router.delete('/expendType/:expendType_id', async (req, res) => {
+  const { expendType_id } = req.params
+  const data = await expendService.deleteExpendType(expendType_id)
+  if (data) {
+    res.json({
+      meta: {
+        status: 200,
+        meta: '修改支出类型数据成功'
+      },
+    })
+  } else {
+    res.json({
+      meta: {
+        status: 400,
+        meta: '修改支出类型数据失败'
+      },
+    })
+  }
+})
+
 module.exports = router

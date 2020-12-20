@@ -240,8 +240,8 @@ export default {
       searchFormRules: {
         timeArr: [],
         incomeType_id: [],
-        lowPrice: [],
-        highPrice: []
+        lowPrice: '',
+        highPrice: ''
       },
       // 表格数据
       incomeList: [],
