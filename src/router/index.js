@@ -4,7 +4,6 @@ const Index = () => import('../views/Index.vue')
 const SignIn = () => import('../views/SignIn.vue')
 const Login = () => import('../components/LoginAndRegister/Login.vue')
 const Register = () => import('../components/LoginAndRegister/Register.vue')
-const Demo = () => import('../views/Demo.vue')
 const Home = () => import('../components/Home.vue')
 const AddIncome = () => import('../components/addBill/AddIncome.vue')
 const AddExpend = () => import('../components/addBill/AddExpend.vue')
@@ -20,10 +19,6 @@ const routes = [
   {
     path: '/',
     redirect: '/SignIn'
-  },
-  {
-    path: '/demo',
-    component: Demo
   },
   {
     path: '/signIn',

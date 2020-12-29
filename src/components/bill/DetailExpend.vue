@@ -64,7 +64,7 @@
                 v-model="searchForm.lowPrice"
                 clearable
                 placeholder="最低价"
-                @change="getExpendList"
+                @input="getExpendList"
               ></el-input>
             </el-form-item>
             <p></p>
@@ -73,7 +73,7 @@
                 v-model="searchForm.highPrice"
                 clearable
                 placeholder="最高价"
-                @change="getExpendList"
+                @input="getExpendList"
               ></el-input>
             </el-form-item>
           </el-form-item>
