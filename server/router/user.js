@@ -68,10 +68,40 @@ router.put('/register', async (req, res) => {
 })
 
 // 获取图片
-router.get('/image/:uid/:url', (req, res) => {
-  const { uid, url } = req.params
+router.get('/image', (req, res) => {
+  const { uid, url } = req.query
   res.sendFile(path.join(__dirname, '/../images/' + uid + '/' + url))
 })
 
+// 修改密码
+router.put('/user/:uid', async (req, res) => {
+  const { uid } = req.params
+  // 获取旧密码，新密码
+  const { oldPwd, newPwd } = req.body
+  await userService.updatePwd(uid, oldPwd, newPwd).then(data => {
+    if (data) {
+      res.json({
+        meta: {
+          status: 200,
+          msg: '修改密码成功'
+        }
+      })
+    } else {
+      res.json({
+        meta: {
+          status: 400,
+          msg: '修改密码失败'
+        }
+      })
+    }
+  }).catch(err => {
+    res.json({
+      meta: {
+        status: 401,
+        msg: err.message
+      }
+    })
+  })
+})
 
 module.exports = router

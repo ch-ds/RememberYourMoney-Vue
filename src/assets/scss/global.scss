@@ -62,6 +62,7 @@ li {
 }
 
 .el-card {
+  color: var(--font-color);
   margin: 20px;
   background-color: var(--article-color-active);
   border: none;
@@ -74,6 +75,7 @@ li {
 }
 
 .el-tabs {
+  margin-top: 20px;
   .el-tabs__nav-wrap::after {
     background-color: var(--font-color);
   }

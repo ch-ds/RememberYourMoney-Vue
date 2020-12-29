@@ -365,7 +365,7 @@ export default {
       this.editForm.expend_date = new Date(this.editForm.expend_date).getTime()
       this.fileList = []
       this.fileList = info.expend_images.map(item => ({
-        url: `http://127.0.0.1:8081/image/${this.$store.state.userObj.uid}/${item}`
+        url: `http://127.0.0.1:8081/image?uid=${this.$store.state.userObj.uid}&url=${item}`
       }))
       this.editDialogVisible = true
     },

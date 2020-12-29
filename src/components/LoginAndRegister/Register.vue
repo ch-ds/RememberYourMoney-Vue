@@ -6,12 +6,6 @@
       ref="registerFormRef"
       :rules="registerFormRule"
     >
-      <el-form-item prop="realname">
-        <el-input
-          placeholder="请输入用户名"
-          v-model="registerForm.realname"
-        ></el-input>
-      </el-form-item>
       <el-form-item prop="username">
         <el-input
           prefix-icon="el-icon-user-solid"
@@ -27,6 +21,14 @@
           v-model="registerForm.password"
         ></el-input>
       </el-form-item>
+      <el-form-item prop="isPassword">
+        <el-input
+          prefix-icon="el-icon-lock"
+          placeholder="请确认密码"
+          show-password
+          v-model="registerForm.isPassword"
+        ></el-input>
+      </el-form-item>
       <el-form-item prop="service">
         <el-checkbox v-model="registerForm.service">
           同意
@@ -40,7 +42,7 @@
     </el-form>
     <!-- 图片信息 -->
     <div class="register-img">
-      <img src="../../assets/images/register_img.webp" alt="" />
+      <img src="~@/assets/images/register_img.webp" alt="" />
     </div>
   </div>
 </template>
@@ -70,9 +72,19 @@ export default {
       if (!value) {
         return callback(new Error('请输入密码'))
       }
-      const reg = /^[a-zA-Z0-9_]{4,16}$/
+      const reg = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[._~!@#$^&*])[A-Za-z0-9._~!@#$^&*]{6,20}$/
       if (!reg.test(value)) {
-        return callback(new Error('账号 4 到 16 位的字母、数字、下划线组合'))
+        return callback(new Error('密码由 6 到 20 位的小写字母、大写字母、数字、特殊符号组合'))
+      } else {
+        return callback()
+      }
+    }
+    const validIsPassword = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请输入密码'))
+      }
+      if (value !== this.registerForm.password) {
+        return callback(new Error('两个密码不相等'))
       } else {
         return callback()
       }
@@ -86,18 +98,15 @@ export default {
     }
     return {
       registerForm: {
-        realname: '',
         username: '',
         password: '',
+        isPassword: '',
         service: false
       },
       registerFormRule: {
-        realname: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 7, message: '用户名的长度在 3 到 7 之间', trigger: 'blur' }
-        ],
         username: [{ validator: validUsername, trigger: 'blur' }],
         password: [{ validator: validPassword, trigger: 'blur' }],
+        isPassword: [{ validator: validIsPassword, trigger: 'blur' }],
         service: [{ validator: validService, trigger: 'blur' }]
       }
     }

@@ -358,7 +358,7 @@ export default {
       // this.editForm = info
       this.editDialogVisible = true
       info.income_images.forEach(item => {
-        this.fileList.push({ url: `http://127.0.0.1:8081/image/${this.$store.state.userObj.uid}/${item}` })
+        this.fileList.push({ url: `http://127.0.0.1:8081/image?uid=${this.$store.state.userObj.uid}&url=${item}` })
       })
     },
     // 对话框关闭事件

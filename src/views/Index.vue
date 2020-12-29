@@ -3,7 +3,7 @@
     <!-- header顶部 -->
     <header class="index-header">
       <div class="header-logo-wrap">
-        <img alt="logo" src="../assets/logo.png" />
+        <img alt="logo" src="~@/assets/logo.png" />
       </div>
       <div class="header-info-wrap">
         <div class="tool-row">
@@ -12,9 +12,9 @@
           ></el-button>
         </div>
         <div class="info-row">
-          <span class="info-name"
-            >欢迎你,{{ $store.state.userObj.realname }}</span
-          >
+          <p class="info-name">
+            欢迎你,<strong>{{ username || '未命名用户' }}</strong>
+          </p>
           <el-badge :value="4" type="success">
             <i class="iconfont icon-icon-test1"></i>
           </el-badge>
@@ -22,7 +22,7 @@
             <i class="iconfont icon-icon-test"></i>
           </el-badge>
           <el-button>
-            <i class="iconfont icon-tuichu6">退出</i>
+            <i class="iconfont icon-tuichu6" @click="signOut">退出</i>
           </el-button>
         </div>
       </div>
@@ -32,9 +32,18 @@
       <aside class="index-aside" v-show="showAside" key="aside">
         <!-- 头像区域 -->
         <div class="aside-info-wrap">
-          <img src="../assets/images/user.jpg" alt="头像" />
-          <p>{{ $store.state.userObj.realname }}</p>
-          <a href=""><i class="el-icon-edit"></i>账号设置</a>
+          <img
+            :src="
+              image
+                ? `http://localhost:8081/image?uid=${uid}&url=${image}`
+                : require('@/assets/images/header.png')
+            "
+            alt="头像"
+          />
+          <p>{{ remark || '未设置个人简介' }}</p>
+          <router-link to="/setup/userInfo">
+            <i class="el-icon-edit"></i>账号设置
+          </router-link>
         </div>
         <!-- 导航栏区域 -->
         <el-menu
@@ -107,7 +116,7 @@ export default {
               icon: 'iconfont icon-zhichumingxi',
               router: '/detailBill/expend'
             }]
-          }, {
+          }/* , {
             id: '32',
             name: '总账单',
             icon: 'iconfont icon-zhangdan',
@@ -122,7 +131,7 @@ export default {
               icon: 'iconfont icon-yue',
               router: ''
             }]
-          }]
+          } */]
         }, {
           id: '4',
           name: '设置',
@@ -145,9 +154,43 @@ export default {
             id: '42',
             name: '个人信息设置',
             icon: 'el-icon-user-solid',
-            router: ''
+            router: '/setup/userInfo'
           }]
-        }]
+
+        }
+      ]
+    }
+  },
+  methods: {
+    // 获取用户信息
+    async getUserInfo () {
+      const { data: res } = await this.$http.get('/userInfo/' + this.$store.state.userObj.uid)
+      if (res.meta.status !== 200) return this.$message.error('获取用户信息失败')
+      this.$store.state.userInfo = res.data[0]
+    },
+    // 退出按钮
+    signOut () {
+      console.log('退出')
+      this.$store.commit('resetVuex')
+      sessionStorage.clear()
+      this.$router.push('/login')
+    }
+  },
+  mounted () {
+    this.getUserInfo()
+  },
+  computed: {
+    uid () {
+      return this.$store.state.userInfo.uid
+    },
+    username () {
+      return this.$store.state.userInfo.username
+    },
+    remark () {
+      return this.$store.state.userInfo.remark || ''
+    },
+    image () {
+      return this.$store.state.userInfo.image
     }
   },
   components: {
@@ -248,24 +291,36 @@ main {
     width: 250px;
     min-height: 100%;
     > .aside-info-wrap {
-      padding: 20px 0 0 20px;
+      position: relative;
+      padding: 10px;
       height: 220px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       background-color: var(--aside-color);
-
       > img {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50px);
         width: 100px;
         height: 100px;
         border-radius: 50%;
       }
-
       > p {
         color: rgb(173, 174, 174);
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        -moz-box-orient: vertical;
+        margin: auto auto;
       }
 
       > a {
+        position: absolute;
+        bottom: 10px;
         color: var(--font-color);
         text-decoration: none;
         &:hover {

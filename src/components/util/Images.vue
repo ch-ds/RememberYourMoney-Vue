@@ -4,7 +4,7 @@
       <li v-for="(item, index) in imgList" :key="index">
         <img
           :class="['image', { 'image-active': isPreview }]"
-          :src="`http://127.0.0.1:8081/image/${$store.state.userObj.uid}/${item}`"
+          :src="`http://127.0.0.1:8081/image?uid=${$store.state.userObj.uid}&url=${item}`"
           @click="preview"
         />
       </li>

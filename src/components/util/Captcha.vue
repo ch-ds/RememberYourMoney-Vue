@@ -27,7 +27,7 @@ export default {
     // 背景颜色的最大值和最小值
     backgroundColorMin: {
       type: Number,
-      default: 0
+      default: 160
     },
     backgroundColorMax: {
       type: Number,
@@ -37,7 +37,7 @@ export default {
     // 线条的颜色最小值和最大值
     lineColorMin: {
       type: Number,
-      default: 0
+      default: 160
     },
     lineColorMax: {
       type: Number,
@@ -52,7 +52,7 @@ export default {
     // 字体的最小值和最大值，字体
     fontSizeMin: {
       type: Number,
-      default: 16
+      default: 18
     },
     fontSizeMax: {
       type: Number,
@@ -69,7 +69,7 @@ export default {
     },
     fontColorMax: {
       type: Number,
-      default: 255
+      default: 155
     }
   },
   methods: {
@@ -77,7 +77,7 @@ export default {
     randomNumber (min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min)
     },
-    // 生成随机晏书
+    // 生成随机颜色
     randomColor (min, max) {
       const r = this.randomNumber(min, max)
       const g = this.randomNumber(min, max)

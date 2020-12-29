@@ -11,6 +11,7 @@ class userService {
     if (data.length !== 0) {
       // 获取token
       data[0].token = jwt.sign({ username }, PRIVATE_KEY, { expiresIn: EXPIRESD })
+      console.log(jwt.sign({ username }, PRIVATE_KEY, { expiresIn: EXPIRESD }))
       // 将密码数据删除发送给前端
       delete data[0].password
       return data[0]
@@ -41,6 +42,19 @@ class userService {
     // 进行注册
     const data = await userDao.insert({ username, password, realname })
     return data
+  }
+
+  // 修改密码
+  async updatePwd (uid, oldPwd, newPwd) {
+    // 先检查旧密码是否正确，若错误直接返回
+    let data = await userDao.findByFilter({ uid, password: oldPwd })
+    if (data.length === 0) throw new Error('原密码错误')
+    data = await userDao.update({ password: newPwd }, { uid })
+    if (data.affectedRows > 0) {
+      return true
+    } else {
+      return false
+    }
   }
 }
 

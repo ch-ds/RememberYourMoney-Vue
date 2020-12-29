@@ -15,6 +15,15 @@ import echarts from 'echarts'
 // 配置 axios
 axios.defaults.baseURL = 'http://127.0.0.1:8081'
 Vue.prototype.$http = axios
+axios.interceptors.request.use(config => {
+  // 为请求头添加token
+  if (sessionStorage.getItem('token')) {
+    config.headers.Authorization = 'Bearer ' + sessionStorage.getItem('token')
+  }
+  return config
+}, err => {
+  console.log('失败心思：' + err)
+})
 
 Vue.config.productionTip = false
 

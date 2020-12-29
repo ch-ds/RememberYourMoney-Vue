@@ -4,7 +4,7 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 // 使用插件接收 formdata 数据
 const multiparty = require('multiparty')
-const fs = require('fs');
+const fs = require('fs')
 const { Console } = require('console')
 
 const router = express.Router()

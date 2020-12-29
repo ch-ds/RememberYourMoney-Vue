@@ -2,7 +2,7 @@
   <div class="login">
     <!-- 登录区域 -->
     <div class="login-img">
-      <img src="../../assets/images/login_img.jpg" alt="" />
+      <img src="~@/assets/images/login_img.jpg" alt="" />
       <span>理财早规划 用钱不慌张</span>
     </div>
     <el-form :model="loginForm" :rules="loginRules" ref="loginFormRef">
@@ -44,7 +44,7 @@
         <el-button @click="login">登录</el-button>
       </el-form-item>
       <el-form-item class="form-util">
-        <router-link to="/register">忘了密码</router-link>
+        <router-link to="/login">忘了密码</router-link>
         <router-link to="/register">注册新账号</router-link>
       </el-form-item>
     </el-form>
@@ -89,12 +89,12 @@ export default {
           return this.refreshCaptchaValue()
         }
         const { data: res } = await this.$http.post('/login', this.loginForm)
-        console.log(res)
         if (res.meta.status !== 200) {
           this.refreshCaptchaValue()
           return this.$message.error('账号或密码错误')
         }
         // 登录成功，存储用户信息
+        window.sessionStorage.setItem('token', res.data.token)
         this.$store.commit('setUserObj', res.data)
         // 清楚页面数据，跳转页面
         this.$refs.loginFormRef.resetFields()
@@ -103,14 +103,16 @@ export default {
     },
     // 随机数字
     randomNumber (min, max) {
-      return Math.floor(Math.random() * (max - min + 1) + 1)
+      return Math.floor(Math.random() * (max - min + 1) + min)
     },
     // 获取验证码
     getCaptchaValue (len = 4) {
       const chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
       for (let i = 0, charsLen = chars.length - 1; i < len; i++) {
-        this.captchaValue += chars[this.randomNumber(0, charsLen)]
+        const num = this.randomNumber(0, charsLen)
+        this.captchaValue += chars[num]
       }
+      console.log(this.captchaValue)
     },
     // 刷新验证码
     refreshCaptchaValue (len = 4) {

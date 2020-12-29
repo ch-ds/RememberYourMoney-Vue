@@ -1,10 +1,10 @@
 const express = require('express')
 const incomeService = require('../service/incomeService')
-var path = require('path');
-var mkdirp = require('mkdirp');
+var path = require('path')
+var mkdirp = require('mkdirp')
 // 使用该插件接收formdata
-var multiparty = require("multiparty");
-const fs = require('fs');
+var multiparty = require("multiparty")
+const fs = require('fs')
 
 const router = express.Router()
 

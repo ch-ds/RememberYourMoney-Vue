@@ -5,11 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    userObj: {}
+    userObj: {},
+    userInfo: {}
   },
   mutations: {
     setUserObj (state, userObj) {
       state.userObj = userObj
+    },
+    setUserInfo (state, userInfo) {
+      state.userInfo = userInfo
+    },
+    resetVuex (state) {
+      state.userObj = {}
+      state.userInfo = {}
     }
   },
   actions: {
